@@ -68,6 +68,7 @@ db/reset:
 	@make docker/down
 	docker volume rm -f docker_gitscan
 	@make docker/up
+
 .PHONY: test
 test: ## Generate mock and run all test. To run specified tests, use `./scripts/test.sh <pattern>`)
 	@scripts/test.sh $*
