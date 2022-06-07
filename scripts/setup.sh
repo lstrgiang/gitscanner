@@ -57,19 +57,5 @@ if [[ -z $CI ]]; then
 
         chmod +x ./bin/migrate
     fi
-
-    if ! has richgo; then
-        echo_info "Install richgo for nicer go test output"
-        # this one should be safe to install globally
-        go get -v -u github.com/kyoh86/richgo
-    fi
-
-    if ! has sqlboiler; then
-    echo_info "Installing sqlboiler version 4. !"
-        go install github.com/volatiletech/sqlboiler/v4@latest
-        echo_info "Installing psql driver for sqlboiler "
-        go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
-    fi
-
 fi
 
