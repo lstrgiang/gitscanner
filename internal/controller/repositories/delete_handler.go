@@ -36,7 +36,9 @@ func (h deleteHandler) Handle(e echo.Context) error {
 	ctx, tx := inject.CtxTx(e)
 	repositoriesService := services.GetRepositoryService(ctx, tx)
 	if err := repositoriesService.DeleteByID(request.GetID()); err != nil {
+		tx.Rollback()
 		return err
 	}
+	tx.Commit()
 	return e.NoContent(http.StatusOK)
 }

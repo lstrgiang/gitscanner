@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"net/url"
+
 	"github.com/labstack/echo/v4"
 	"github.com/lstrgiang/gitscan/internal/infra/errors"
 )
@@ -31,6 +33,9 @@ func (r postRequest) Validate() error {
 	}
 	if r.Link == "" {
 		return errors.NewParamErr("link must be provided")
+	}
+	if _, err := url.ParseRequestURI(r.Link); err != nil {
+		return errors.InvalidUrlError
 	}
 	return nil
 }

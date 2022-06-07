@@ -1,6 +1,9 @@
 package repositories
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/lstrgiang/gitscan/internal/infra/errors"
+)
 
 func NewDeleteRequest() DeleteRequest {
 	return &deleteRequest{}
@@ -22,7 +25,7 @@ func (r *deleteRequest) Bind(e echo.Context) error {
 
 func (r deleteRequest) Validate() error {
 	if r.ID <= 0 {
-		return nil
+		return errors.InvalidIdError
 	}
 	return nil
 }
