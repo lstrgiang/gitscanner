@@ -23,12 +23,13 @@ type App interface {
 }
 
 type app struct {
-	e         *echo.Echo
-	LogLevel  string
-	DbUrl     string
-	Port      string
-	Host      string
-	ApiPrefix string
+	e             *echo.Echo
+	LogLevel      string
+	DbUrl         string
+	Port          string
+	Host          string
+	ApiPrefix     string
+	RedisLocation string
 }
 
 func (a *app) Run() error {

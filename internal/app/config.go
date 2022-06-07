@@ -14,17 +14,19 @@ import (
 )
 
 const (
-	DefaultDBUrl     = "postgres://postgres:postgres@localhost:5432/gitscan?sslmode=disable"
-	DefaultPort      = "8080"
-	DefaultHost      = "localhost"
-	DefaultLogLevel  = "error"
-	DefaultApiPrefix = "/api"
+	DefaultDBUrl         = "postgres://postgres:postgres@localhost:5432/gitscan?sslmode=disable"
+	DefaultPort          = "8080"
+	DefaultHost          = "localhost"
+	DefaultLogLevel      = "error"
+	DefaultRedisLocation = "localhost:6379"
+	DefaultApiPrefix     = "/api"
 
-	DBUrlEnv     = "DB_URL"
-	PortEnv      = "SERVER_PORT"
-	HostEnv      = "SERVER_HOST"
-	LogLevelEnv  = "LOG_LEVEL"
-	ApiPrefixEnv = "API_PREFIX"
+	DBUrlEnv         = "DB_URL"
+	PortEnv          = "SERVER_PORT"
+	HostEnv          = "SERVER_HOST"
+	RedisLocationEnv = "REDIS_LOCATION"
+	LogLevelEnv      = "LOG_LEVEL"
+	ApiPrefixEnv     = "API_PREFIX"
 )
 
 type ErrorResponse struct {
@@ -52,6 +54,7 @@ func (a *app) Parse() {
 	flag.StringVar(&a.Port, "port", GetEnv(PortEnv, DefaultPort), "Running port")
 	flag.StringVar(&a.Host, "host", GetEnv(HostEnv, DefaultHost), "Running host")
 	flag.StringVar(&a.ApiPrefix, "api", GetEnv(ApiPrefixEnv, DefaultApiPrefix), "Server API Prefix")
+	flag.StringVar(&a.RedisLocation, "redis", GetEnv(RedisLocationEnv, DefaultRedisLocation), "Redis location")
 	flag.Parse()
 }
 
@@ -121,5 +124,5 @@ func (a *app) ConfigMiddleware() {
 	a.e.Use(middleware.Recover())
 
 	// use dependencies injection middleware
-	a.e.Use(localMiddleware.Inject(a.DbUrl))
+	a.e.Use(localMiddleware.Inject(a.DbUrl, a.RedisLocation))
 }
