@@ -178,15 +178,26 @@ var RepositoryWhere = struct {
 
 // RepositoryRels is where relationship names are stored.
 var RepositoryRels = struct {
-}{}
+	Scans string
+}{
+	Scans: "Scans",
+}
 
 // repositoryR is where relationships are stored.
 type repositoryR struct {
+	Scans ScanSlice `boil:"Scans" json:"Scans" toml:"Scans" yaml:"Scans"`
 }
 
 // NewStruct creates a new relationship struct
 func (*repositoryR) NewStruct() *repositoryR {
 	return &repositoryR{}
+}
+
+func (r *repositoryR) GetScans() ScanSlice {
+	if r == nil {
+		return nil
+	}
+	return r.Scans
 }
 
 // repositoryL is where Load methods for each relationship are stored.
@@ -476,6 +487,172 @@ func (q repositoryQuery) Exists(ctx context.Context, exec boil.ContextExecutor) 
 	}
 
 	return count > 0, nil
+}
+
+// Scans retrieves all the scan's Scans with an executor.
+func (o *Repository) Scans(mods ...qm.QueryMod) scanQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"gitscan\".\"scans\".\"repository_id\"=?", o.ID),
+	)
+
+	return Scans(queryMods...)
+}
+
+// LoadScans allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (repositoryL) LoadScans(ctx context.Context, e boil.ContextExecutor, singular bool, maybeRepository interface{}, mods queries.Applicator) error {
+	var slice []*Repository
+	var object *Repository
+
+	if singular {
+		object = maybeRepository.(*Repository)
+	} else {
+		slice = *maybeRepository.(*[]*Repository)
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &repositoryR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &repositoryR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.From(`gitscan.scans`),
+		qm.WhereIn(`gitscan.scans.repository_id in ?`, args...),
+		qmhelper.WhereIsNull(`gitscan.scans.deleted_at`),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load scans")
+	}
+
+	var resultSlice []*Scan
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice scans")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on scans")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for scans")
+	}
+
+	if len(scanAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.Scans = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &scanR{}
+			}
+			foreign.R.Repository = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.RepositoryID {
+				local.R.Scans = append(local.R.Scans, foreign)
+				if foreign.R == nil {
+					foreign.R = &scanR{}
+				}
+				foreign.R.Repository = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// AddScans adds the given related objects to the existing relationships
+// of the repository, optionally inserting them as new records.
+// Appends related to o.R.Scans.
+// Sets related.R.Repository appropriately.
+func (o *Repository) AddScans(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Scan) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.RepositoryID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"gitscan\".\"scans\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"repository_id"}),
+				strmangle.WhereClause("\"", "\"", 2, scanPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.RepositoryID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &repositoryR{
+			Scans: related,
+		}
+	} else {
+		o.R.Scans = append(o.R.Scans, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &scanR{
+				Repository: o,
+			}
+		} else {
+			rel.R.Repository = o
+		}
+	}
+	return nil
 }
 
 // Repositories retrieves all the records using an executor.
