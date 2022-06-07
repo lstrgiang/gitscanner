@@ -1,0 +1,28 @@
+
+version: '3'
+
+services:
+  db:
+    build:
+      context: ../
+      dockerfile: docker/db.Dockerfile
+    image: gitscan-db
+    container_name: gitscan-db
+    ports:
+        - "${DB_PORT}:5432"
+    volumes: 
+      - gitscan:/var/lib/postgresql-static/data
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - gitscan-network
+
+
+volumes:
+  gitscan:
+
+networks:
+  gitscan-network:
+    driver: bridge
