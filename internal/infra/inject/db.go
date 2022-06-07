@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	keyDB = "inject_db"
+	keyDB    = "inject_db"
+	keyDBUrl = "inject_db_url"
 )
 
 func DB(e echo.Context) *sql.DB {
@@ -19,6 +20,16 @@ func DB(e echo.Context) *sql.DB {
 	return val.(*sql.DB)
 }
 
+func SetDbUrl(e echo.Context, dbUrl string) {
+	e.Set(keyDBUrl, dbUrl)
+}
+
 func SetDB(e echo.Context, db *sql.DB) {
 	e.Set(keyDB, db)
+}
+
+func DBUrl(e echo.Context) string {
+	val := e.Get(keyDBUrl)
+
+	return val.(string)
 }
