@@ -1,0 +1,6 @@
+in: query
+name: 'page'
+required: false
+schema:
+  type: integer
+description: The number of a page to return.

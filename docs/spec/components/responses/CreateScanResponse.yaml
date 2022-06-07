@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 2
+  repository_name:
+    type: string
+    example: "Test Repository"
+  repository_url:
+    type: string
+    example: "https://github.com/lstrgiang/gitscanner"
+  status:
+    type: string
+    example: "Queued"
+  findings: 
+    type: json
+    example: null
+  finished_at: 
+    type: timestamp
+    example: null
+  queued_at:
+    type: timestamp
+    example: null
+  scanning_at:
+    type: timestamp
+    example: null

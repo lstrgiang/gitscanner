@@ -1,0 +1,29 @@
+type: object
+properties:
+  rule_id:
+    type: string
+    example: "G2202"
+  type:
+    type: string
+    example: "secret_key"
+  location: 
+    type: object
+    properties:
+      path:
+        type: string
+        example: "/test_dir/filename"
+      position:
+        type: string
+        properties:
+          begin: 
+            type: integer
+            example: 22
+  meta:
+    type: object
+    properties: 
+      description:
+        type: string
+        example: "Secret key should not be exposed publicly"
+      severity:
+        type: string
+        example: "HIGH"

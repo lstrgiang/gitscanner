@@ -1,0 +1,8 @@
+apiTitle: git-scanner
+splitSpec: true
+codeSamples: false
+swaggerUI: true
+travis: true
+repo: lstrgiang/git-scanner
+oasVersion: 1.0.0
+

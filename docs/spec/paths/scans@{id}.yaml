@@ -1,0 +1,99 @@
+parameters:
+  - name: id
+    in: path
+    description: Repository Identity
+    required: true
+    schema:
+      type: integer
+
+post:
+  tags:
+    - Scans
+  summary: Trigger Scan By Repository Id
+  description: Trigger Scan
+  operationId: triggerScan
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/responses/CreateScanResponse'
+    '400':
+      description: Invalid Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Invalid request"
+    '401':
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string 
+                example: "Method not allowed"
+
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Internal server error"
+
+
+get:
+  tags:
+    - Scans
+  summary: Get scan detail by scan id 
+  description: Get Scan Detail
+  operationId: getScan
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/responses/GetScanResponse'
+    '400':
+      description: Invalid Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Invalid request"
+    '401':
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string 
+                example: "Method not allowed"
+
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Internal server error"
+

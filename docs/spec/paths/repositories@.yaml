@@ -1,0 +1,138 @@
+
+get:
+  tags:
+    - Repositories
+  summary: Get list of repository 
+  description: Get Repository Detail
+  operationId: getRepository
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/responses/ListScanResponse'
+    '400':
+      description: Invalid Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Invalid request"
+    '401':
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string 
+                example: "Method not allowed"
+
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Internal server error"
+
+put:
+  tags:
+    - Repositories
+  summary: Get list of repository 
+  description: Get Repository Detail
+  operationId: getRepository
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/responses/GetRepositoryResponse'
+    '400':
+      description: Invalid Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Invalid request"
+    '401':
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string 
+                example: "Method not allowed"
+
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Internal server error"
+
+
+post:
+  tags:
+    - Repositories
+  summary: Get Repository by id 
+  description: Get Repository Detail
+  operationId: getRepository
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/responses/GetRepositoryResponse'
+    '400':
+      description: Invalid Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Invalid request"
+    '401':
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string 
+                example: "Method not allowed"
+
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: 
+              error: 
+                type: string
+                example: "Internal server error"
+
+

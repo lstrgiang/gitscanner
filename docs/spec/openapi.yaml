@@ -1,0 +1,8 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Git Scanner
+  description: 'API Document for Wager Server - Prophet Assignment'
+servers:
+  - url: 'http://localhost:8080/api'
+    description: Developer Environment

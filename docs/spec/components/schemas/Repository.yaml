@@ -1,0 +1,11 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 2
+  name:
+    type: string
+    example: "Test Repository"
+  link:
+    type: string
+    example: "https://github.com/lstrgiang/gitscanner"
